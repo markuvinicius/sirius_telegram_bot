@@ -55,18 +55,16 @@ public class BotController extends TelegramLongPollingSessionBot {
             modelAndView = this.buildModelAndViewFromException(exception,update);
         }
 
-        if (modelAndView != null) {
-            ResponseView view = modelAndView.getView();
-            ModelMap objects = modelAndView.getModelObjects();
-            SendMessage message = view.render(objects);
 
-            try {
-                execute(message); // Call method to send the message
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
+        ResponseView view = modelAndView.getView();
+        ModelMap objects = modelAndView.getModelObjects();
+        SendMessage message = view.render(objects);
+
+        try {
+            execute(message); // Call method to send the message
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
         }
-
     }
 
     private ModelAndView buildModelAndViewFromException(BotException exception, Update update){
