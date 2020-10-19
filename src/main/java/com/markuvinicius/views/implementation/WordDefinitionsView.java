@@ -51,7 +51,6 @@ public class WordDefinitionsView implements ResponseView {
                     .append( definition.getDefinition())
                     .append("\n");
 
-            System.out.println(new String(builder));
             i += 1;
         }
         builder.append("\n\n");
