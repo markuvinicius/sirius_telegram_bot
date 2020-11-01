@@ -14,7 +14,7 @@ import java.util.Optional;
 @Slf4j
 public class LinkUpdataHandler extends AbstractUpdateHandler {
     @Override
-    public ModelAndView execute(Update update, Optional<Session> session) throws BotException {
-        return checkNext(update,session);
+    public ModelAndView execute(Update update) throws BotException {
+        return checkNext(update);
     }
 }

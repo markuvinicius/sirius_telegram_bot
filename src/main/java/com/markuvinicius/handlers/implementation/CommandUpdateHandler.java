@@ -28,7 +28,7 @@ public class CommandUpdateHandler  extends AbstractUpdateHandler {
 
 
     @Override
-    public ModelAndView execute(Update update, Optional<Session> session) throws BotException {
+    public ModelAndView execute(Update update) throws BotException {
         if (update.hasMessage()){
             if (update.getMessage().hasEntities()){
                 if (this.hasCommand( update.getMessage().getEntities()) ) {
@@ -38,7 +38,7 @@ public class CommandUpdateHandler  extends AbstractUpdateHandler {
             }
         }
 
-        return this.checkNext(update,session);
+        return this.checkNext(update);
     }
 
     private boolean hasCommand(List<MessageEntity> entities){

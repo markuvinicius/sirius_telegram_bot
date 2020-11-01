@@ -7,6 +7,8 @@ import com.markuvinicius.models.words.WordDefinition;
 import com.markuvinicius.mvc.ModelAndView;
 import com.markuvinicius.services.WordDefinitionService;
 import com.markuvinicius.views.implementation.WordDefinitionDetailsView;
+import lombok.Builder;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.session.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,16 +18,38 @@ import java.io.IOException;
 import java.util.Optional;
 
 @Component
+@Slf4j
 public class CallBackQueryUpdateHandler extends AbstractUpdateHandler {
 
     private WordDefinitionService wordDefinitionService;
+
+
+    private class CallBackCommand{
+        private String command;
+        private String detail;
+        private String info;
+    }
 
     @Autowired
     public CallBackQueryUpdateHandler(WordDefinitionService wordDefinitionService) {
         this.wordDefinitionService = wordDefinitionService;
     }
 
-    private ModelAndView processCallBackQuery(Update update, Optional<Session> session) throws IOException {
+    @Override
+    public ModelAndView execute(Update update) throws BotException {
+        if (update.hasCallbackQuery()){
+            log.info("Processing CallBackQuery");
+            try {
+                return processCallBackQuery(update);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return checkNext(update);
+    }
+
+    private ModelAndView processCallBackQuery(Update update) throws IOException {
         String callBackData = update.getCallbackQuery().getData();
 
         String callBackCommand = callBackData.split("/")[0];
@@ -55,22 +79,5 @@ public class CallBackQueryUpdateHandler extends AbstractUpdateHandler {
         }
 
         return mvc;
-    }
-
-    @Override
-    public ModelAndView execute(Update update, Optional<Session> session) throws BotException {
-
-        if (update.hasCallbackQuery()){
-
-            String callBackData = update.getCallbackQuery().getData();
-            System.out.println("Processando CallBackQuery");
-            try {
-                return processCallBackQuery(update,session);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return checkNext(update,session);
     }
 }

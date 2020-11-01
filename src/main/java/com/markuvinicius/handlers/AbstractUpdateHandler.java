@@ -17,13 +17,13 @@ public abstract class AbstractUpdateHandler implements UpdateHandler {
         return handler;
     }
 
-    protected ModelAndView checkNext(Update update, Optional<Session> session) throws BotException {
+    protected ModelAndView checkNext(Update update) throws BotException {
         if ( this.nextHandler == null) {
             return null;
         }
 
-        return this.nextHandler.execute(update, session);
+        return this.nextHandler.execute(update);
     }
 
-    public abstract ModelAndView execute(Update update, Optional<Session> session) throws BotException;
+    public abstract ModelAndView execute(Update update) throws BotException;
 }
