@@ -2,6 +2,7 @@ package com.markuvinicius.bot;
 
 import com.markuvinicius.exceptions.BotException;
 import com.markuvinicius.exceptions.EnvironmentVariablesNotFoundException;
+import com.markuvinicius.models.properties.TelegramProperties;
 import com.markuvinicius.mvc.ModelAndView;
 import com.markuvinicius.services.UpdateHandleService;
 import com.markuvinicius.views.ResponseView;
@@ -9,61 +10,61 @@ import com.markuvinicius.views.implementation.BotExceptionView;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.session.Session;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.ModelMap;
+import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.session.TelegramLongPollingSessionBot;
 
-
 import java.util.Optional;
 
 @Component
 @Slf4j
-public class BotController extends TelegramLongPollingSessionBot {
-
+public class BotController extends TelegramLongPollingBot {
     private UpdateHandleService updateHandler;
-    private String botUserName;
-    private String botTelegramToken;
-
-    private Environment environment;
+    private TelegramProperties telegramProperties;
 
     @Autowired
     public BotController(UpdateHandleService updateHandler,
-                         Environment env) throws EnvironmentVariablesNotFoundException {
+                         TelegramProperties properties) throws EnvironmentVariablesNotFoundException {
         this.updateHandler = updateHandler;
-        this.environment = env;
+        this.telegramProperties = properties;
 
-        this.botUserName = this.environment.getProperty("BOT_USER_NAME");
-        this.botTelegramToken = this.environment.getProperty("TELEGRAM_TOKEN");
-
-        if ((this.botUserName.isEmpty()) || (this.botTelegramToken.isEmpty())){
-            throw new EnvironmentVariablesNotFoundException("Environment Variables Not Found [BOT_USER_NAME, TELEGRAM_TOKEN]");
+        if (!this.isTelegramCredentialsValid()){
+            throw new EnvironmentVariablesNotFoundException("Environment Variables Not Found or invalid [BOT_USER_NAME, TELEGRAM_TOKEN]");
         }
     }
 
+    private boolean isTelegramCredentialsValid(){
+        return ( ( telegramProperties.getBotUserName() != null)
+                    && ( !telegramProperties.getBotUserName().isEmpty() )
+                    && ( telegramProperties.getBotTelegramToken() != null )
+                    && ( !telegramProperties.getBotTelegramToken().isEmpty() ) );
+    }
+
     @Override
-    public void onUpdateReceived(Update update, Optional<Session> optional) {
-        ModelAndView modelAndView = null;
-
-        try {
-            modelAndView = this.updateHandler.handleUpdate(update, optional);
-        }catch (BotException exception){
-            modelAndView = this.buildModelAndViewFromException(exception,update);
-        }
-
+    public void onUpdateReceived(Update update) {
+        ModelAndView modelAndView = this.buildModelAndViewFromUpdate(update);
 
         ResponseView view = modelAndView.getView();
         ModelMap objects = modelAndView.getModelObjects();
         SendMessage message = view.render(objects);
 
         try {
-            execute(message); // Call method to send the message
+            execute(message); //sends the response message
         } catch (TelegramApiException e) {
             e.printStackTrace();
+        }
+    }
+
+    private ModelAndView buildModelAndViewFromUpdate(Update update){
+        try {
+            return this.updateHandler.handleUpdate(update);
+        }catch (BotException exception){
+            return this.buildModelAndViewFromException(exception,update);
         }
     }
 
@@ -78,12 +79,12 @@ public class BotController extends TelegramLongPollingSessionBot {
 
     @Override
     public String getBotUsername() {
-        return this.botUserName;
+        return this.telegramProperties.getBotUserName();
     }
 
     @Override
     public String getBotToken() {
-        return botTelegramToken;
+        return this.telegramProperties.getBotTelegramToken();
     }
 
 

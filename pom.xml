@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.markuvinicius</groupId>
 	<artifactId>springboot-personal-telegram-bot</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>springboot-personal-telegram-bot</name>
 	<description>Personal bot for telegram</description>
 

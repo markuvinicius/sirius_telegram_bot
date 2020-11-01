@@ -28,7 +28,7 @@ public class UpdateHandleService {
                 .linkWith(callBackUpdateHandler);
     }
 
-    public ModelAndView handleUpdate(Update update, Optional<Session> session) throws BotException {
-        return this.handler.execute(update,session);
+    public ModelAndView handleUpdate(Update update) throws BotException {
+        return this.handler.execute(update);
     }
 }

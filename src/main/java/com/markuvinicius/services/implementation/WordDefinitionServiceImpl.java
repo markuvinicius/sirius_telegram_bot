@@ -2,6 +2,7 @@ package com.markuvinicius.services.implementation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.markuvinicius.exceptions.EnvironmentVariablesNotFoundException;
+import com.markuvinicius.models.properties.WordsApiProperties;
 import com.markuvinicius.models.words.WordComposition;
 import com.markuvinicius.services.WordDefinitionService;
 import okhttp3.OkHttpClient;
@@ -21,35 +22,33 @@ public class WordDefinitionServiceImpl implements WordDefinitionService {
 
     private OkHttpClient http;
 
-    @Value("${words.api.url}")
-    private String wordsApiUrl;
 
-    @Value("${words.api.host}")
-    private String wordsApiHost;
 
-    private String wordsApiKey;
-    private Environment environment;
+    private WordsApiProperties wordsApiProperties;
 
     @Autowired
-    public WordDefinitionServiceImpl(Environment environment) throws EnvironmentVariablesNotFoundException {
+    public WordDefinitionServiceImpl(WordsApiProperties properties) throws EnvironmentVariablesNotFoundException {
         this.http = new OkHttpClient();
-        this.environment = environment;
+        this.wordsApiProperties = properties;
 
-        this.wordsApiKey = this.environment.getProperty("WORDS_API_KEY");
-
-        if (this.wordsApiKey.isEmpty()){
+        if (!this.isWordsAPIKeyValid()){
             throw new EnvironmentVariablesNotFoundException("Environment Variables Not Found [WORDS_API_KEY]");
         }
+    }
+
+    private boolean isWordsAPIKeyValid(){
+        return ( ( this.wordsApiProperties.getWordsAPIKey() != null )
+                && ( !this.wordsApiProperties.getWordsAPIKey().isEmpty()) );
     }
 
     @Override
     public Optional<WordComposition> defineWord(String word) throws IOException {
 
         Request request = new Request.Builder()
-                .url(this.wordsApiUrl + word)
+                .url(this.wordsApiProperties.getWordsApiUrl() + word)
                 .get()
-                .addHeader("x-rapidapi-host", this.wordsApiHost)
-                .addHeader("x-rapidapi-key", this.wordsApiKey)
+                .addHeader("x-rapidapi-host", this.wordsApiProperties.getWordsApiHost())
+                .addHeader("x-rapidapi-key", this.wordsApiProperties.getWordsAPIKey())
                 .build();
 
         Response response = http.newCall(request).execute();

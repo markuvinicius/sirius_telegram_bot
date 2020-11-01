@@ -1,10 +1,8 @@
 package com.markuvinicius.models.words;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.markuvinicius.commons.HashDigestUtil;
 import lombok.Data;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @Data
