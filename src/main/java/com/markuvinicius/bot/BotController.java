@@ -8,18 +8,13 @@ import com.markuvinicius.services.UpdateHandleService;
 import com.markuvinicius.views.ResponseView;
 import com.markuvinicius.views.implementation.BotExceptionView;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.session.Session;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.ModelMap;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import org.telegram.telegrambots.session.TelegramLongPollingSessionBot;
-
-import java.util.Optional;
 
 @Component
 @Slf4j

@@ -10,8 +10,6 @@ import okhttp3.Request;
 import okhttp3.Response;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -21,9 +19,6 @@ import java.util.Optional;
 public class WordDefinitionServiceImpl implements WordDefinitionService {
 
     private OkHttpClient http;
-
-
-
     private WordsApiProperties wordsApiProperties;
 
     @Autowired

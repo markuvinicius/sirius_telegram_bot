@@ -2,11 +2,7 @@ package com.markuvinicius.handlers;
 
 import com.markuvinicius.exceptions.BotException;
 import com.markuvinicius.mvc.ModelAndView;
-import org.apache.shiro.session.Session;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-
-import java.util.Optional;
 
 public abstract class AbstractUpdateHandler implements UpdateHandler {
     private UpdateHandler nextHandler;
