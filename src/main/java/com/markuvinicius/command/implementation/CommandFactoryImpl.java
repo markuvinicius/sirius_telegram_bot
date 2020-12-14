@@ -15,7 +15,7 @@ public class CommandFactoryImpl implements CommandFactory {
     @Override
     public BotCommand getCommand(String commandName) throws BotException {
         switch (commandName){
-            case "word":return wordCommand;
+            case "word" : return wordCommand;
             default: throw new BotCommandNotFoundException("Command " + commandName + " - NOT FOUND");
         }
     }

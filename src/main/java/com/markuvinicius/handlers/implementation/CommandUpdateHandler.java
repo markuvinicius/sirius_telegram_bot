@@ -18,6 +18,7 @@ import java.util.List;
 @Component
 @Slf4j
 public class CommandUpdateHandler  extends AbstractUpdateHandler {
+
     private CommandFactory commandFactory;
 
     @Autowired
