@@ -1,5 +1,6 @@
 package com.markuvinicius.tests.unit;
 
+import com.markuvinicius.command.BotCommand;
 import com.markuvinicius.command.CommandFactory;
 import com.markuvinicius.command.implementation.WordCommand;
 import com.markuvinicius.constants.BotDomainConstants;
@@ -27,40 +28,38 @@ public class CommandUpdateHandlerTest extends BasicUnitTest{
     @Mock private MessageEntity messageEntity;
     @InjectMocks private Update update;
 
+    @Mock private BotCommand botCommand;
     @Mock private CommandFactory commandFactory;
     @InjectMocks private CommandUpdateHandler commandUpdateHandler;
-
-    @Mock private WordDefinitionService wordDefinitionService;
-    @InjectMocks private WordCommand wordCommand;
 
     private String wordCommandText;
     private String messageText;
     private String argumentText;
+    private Long chatId;
 
     @Before
     public void setup(){
         wordCommandText = new String("/word");
-        messageText = new String("/word wordToSearch");
-        argumentText = new String( "wordToSearch");
+        messageText = new String("/word word");
+        argumentText = new String( "word");
+        chatId = 123L;
     }
 
     @Test
-    public void test() throws BotException {
+    public void CommandUpdateHandlerShouldReturnModelAndView() throws BotException {
         Mockito.when( message.hasEntities() ).thenReturn(true);
         Mockito.when( message.getEntities() ).thenReturn( Arrays.asList(messageEntity) );
         Mockito.when( message.getText() ).thenReturn(messageText);
-        Mockito.when( message.getChatId() ).thenReturn(123L);
+        Mockito.when( message.getChatId() ).thenReturn(chatId);
 
         Mockito.when( messageEntity.getText() ).thenReturn( wordCommandText);
-        Mockito.when( messageEntity.getOffset() ).thenReturn( 0 );
-        Mockito.when( messageEntity.getLength() ).thenReturn( 5 );
         Mockito.when( messageEntity.getType() ).thenReturn(BotDomainConstants.MessageEntityType.BOT_COMMAND);
 
-        Mockito.when( commandFactory.getCommand("word") ).thenReturn( wordCommand );
-        Mockito.when( wordCommand.execute(argumentText) ).thenReturn(null);
+        Mockito.when( commandFactory.getCommand("word") ).thenReturn( botCommand );
+        Mockito.when( botCommand.execute(argumentText) ).thenReturn( new ModelAndView() );
 
         ModelAndView mvc = commandUpdateHandler.execute(update);
 
-        Assertions.assertThat(mvc).isNull();
+        Assertions.assertThat(mvc.getModelObjects().getAttribute("chat_id")).isEqualTo(chatId);
     }
 }
