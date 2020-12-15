@@ -2,6 +2,7 @@ package com.markuvinicius.handlers.implementation;
 
 import com.markuvinicius.command.BotCommand;
 import com.markuvinicius.command.CommandFactory;
+import com.markuvinicius.constants.BotDomainConstants;
 import com.markuvinicius.exceptions.BotException;
 import com.markuvinicius.handlers.AbstractUpdateHandler;
 import com.markuvinicius.models.commands.Command;
@@ -14,6 +15,7 @@ import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.List;
+import java.util.Locale;
 
 @Component
 @Slf4j
@@ -39,7 +41,7 @@ public class CommandUpdateHandler  extends AbstractUpdateHandler {
         if ( update.hasMessage() ) {
             if (update.getMessage().hasEntities()) {
                 return update.getMessage().getEntities().stream()
-                        .filter(messageEntity -> messageEntity.getType().equals("bot_command"))
+                        .filter(messageEntity -> messageEntity.getType().equals(BotDomainConstants.MessageEntityType.BOT_COMMAND))
                         .findFirst()
                         .isPresent();
             }
@@ -60,11 +62,18 @@ public class CommandUpdateHandler  extends AbstractUpdateHandler {
 
     private Command extractCommandDetailsFromMessage(Message message){
         MessageEntity commandEntity = this.findBotCommand(message.getEntities());
-        String commandName = commandEntity.getText().replaceAll("/","").trim().toLowerCase();
+        String messageText = message.getText();
+        String commandText = commandEntity.getText();
 
-        int commandPositionAtMessage = commandEntity.getOffset() + commandEntity.getLength();
-        String textAfterCommand = message.getText().substring( commandPositionAtMessage, message.getText().length()).trim();
-        String argument = textAfterCommand.split(" ")[0].toLowerCase().trim();
+        String commandName = commandText
+                                .replaceAll("/","")
+                                .trim()
+                                .toLowerCase();
+
+        String argument = messageText
+                            .replace( commandText , "")
+                            .toLowerCase()
+                            .trim();
 
         return Command.builder()
                     .commandName(commandName)
@@ -74,7 +83,7 @@ public class CommandUpdateHandler  extends AbstractUpdateHandler {
 
     private MessageEntity findBotCommand(List<MessageEntity> entities){
         return entities.stream()
-                .filter( messageEntity -> messageEntity.getType().equals("bot_command"))
+                .filter( messageEntity -> messageEntity.getType().equals(BotDomainConstants.MessageEntityType.BOT_COMMAND))
                 .findFirst()
                 .get();
     }
