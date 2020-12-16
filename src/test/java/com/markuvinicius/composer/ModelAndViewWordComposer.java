@@ -1,26 +1,16 @@
 package com.markuvinicius.composer;
 
-import com.markuvinicius.models.words.WordComposition;
-import com.markuvinicius.models.words.WordDefinition;
 import com.markuvinicius.mvc.ModelAndView;
 import com.markuvinicius.views.implementation.WordDefinitionsView;
 
 public class ModelAndViewWordComposer {
 
-    public static ModelAndView getMVCWord(){
+    public static ModelAndView build(){
         ModelAndView mvc = new ModelAndView();
 
-
-
-        WordComposition wordComposition = new WordComposition();
-        wordComposition.setWord("word");
-        wordComposition.setFrequency(1.1);
-
-      
-        mvc.addObject("word_composition", wordComposition);
+        mvc.addObject("word_composition", WordCompositionComposer.build());
         mvc.setView(new WordDefinitionsView());
+        return mvc;
     }
-
-
 
 }
