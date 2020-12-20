@@ -6,7 +6,7 @@ public class WordCompositionComposer {
 
     public static WordComposition build(){
         WordComposition wordComposition = new WordComposition();
-        wordComposition.setWord("word");
+        wordComposition.setWord("dummyValue");
         wordComposition.setFrequency(1.1);
         wordComposition.setPronunciation(WordPronunciationComposer.build());
         wordComposition.setResults(WordDefinitionComposer.buildWords());

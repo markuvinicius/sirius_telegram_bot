@@ -20,7 +20,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.Arrays;
 
-public class CommandUpdateHandlerTests extends BasicUnitTest{
+public class CommandUpdateHandlerTest extends BasicUnitTest{
 
     @Mock private Message message;
     @Mock private MessageEntity messageEntity;

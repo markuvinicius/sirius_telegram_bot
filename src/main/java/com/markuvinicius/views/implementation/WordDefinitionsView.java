@@ -93,13 +93,11 @@ public class WordDefinitionsView implements ResponseView {
         WordComposition wordComposition = (WordComposition)model.getAttribute("word_composition");
         Long chatId = (Long)model.getAttribute("chat_id");
 
-        SendMessage response = new SendMessage() // Create a SendMessage object with mandatory fields
+        return new SendMessage() // Create a SendMessage object with mandatory fields
                 .setChatId(chatId)
                 .setText(this.makeMessageText(wordComposition))
                 .setReplyMarkup(this.makeOptionButtons(wordComposition))
                 .enableNotification()
                 .enableHtml(true);
-
-        return response;
     }
 }
