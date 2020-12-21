@@ -1,4 +1,5 @@
 pipeline{
+
 /*
     environment {
             registry = "registry.gitlab.com/markuvinicius"
@@ -6,6 +7,11 @@ pipeline{
             
     }
 */
+
+    environment {
+        registry = "hub.docker.com/markuvinicius/sirius-telegram-bot"
+        registryCredential = 'dockerhub'
+    }
 
     agent any
 
