@@ -1,6 +1,6 @@
 pipeline{
     environment {
-        registry = "hub.docker.com/markuvinicius/sirius-telegram-bot"
+        registry = "markuvinicius/sirius-telegram-bot"
         registryCredential = 'dockerhub'
         dockerImage = ''
     }
