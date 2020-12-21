@@ -3,6 +3,7 @@ pipeline{
     environment {
             registry = "registry.gitlab.com/markuvinicius"
             registryCredential = 'gitlab-registry'
+            
     }
 */
 
