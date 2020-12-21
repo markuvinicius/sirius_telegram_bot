@@ -2,7 +2,7 @@ package com.markuvinicius.tests.unit;
 
 import com.markuvinicius.command.BotCommand;
 import com.markuvinicius.command.CommandFactory;
-import com.markuvinicius.composer.ModelAndViewWordComposer;
+import com.markuvinicius.composer.ModelAndViewWordCompositionComposer;
 import com.markuvinicius.constants.BotDomainConstants;
 import com.markuvinicius.exceptions.BotException;
 import com.markuvinicius.handlers.implementation.CommandUpdateHandler;
@@ -35,6 +35,7 @@ public class CommandUpdateHandlerTest extends BasicUnitTest{
     private String argumentText;
     private Long chatId;
     private String wordCommand;
+    private final String OBJECT_KEY_NAME = "word_composition";
 
     @Before
     public void setup(){
@@ -75,7 +76,7 @@ public class CommandUpdateHandlerTest extends BasicUnitTest{
         Mockito.when( messageEntity.getType() ).thenReturn(BotDomainConstants.MessageEntityType.BOT_COMMAND);
 
         Mockito.when( commandFactory.getCommand(wordCommand) ).thenReturn( botCommand );
-        Mockito.when( botCommand.execute(argumentText) ).thenReturn(ModelAndViewWordComposer.build());
+        Mockito.when( botCommand.execute(argumentText) ).thenReturn(ModelAndViewWordCompositionComposer.build());
 
         ModelAndView mvc = commandUpdateHandler.execute(update);
 

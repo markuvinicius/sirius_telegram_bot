@@ -3,7 +3,7 @@ package com.markuvinicius.composer;
 import com.markuvinicius.mvc.ModelAndView;
 import com.markuvinicius.views.implementation.WordDefinitionsView;
 
-public class ModelAndViewWordComposer {
+public class ModelAndViewWordCompositionComposer {
 
     public static ModelAndView build(){
         ModelAndView mvc = new ModelAndView();
