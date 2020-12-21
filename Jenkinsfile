@@ -55,7 +55,7 @@ pipeline{
         }
 */
 
-        stage ('Build Application Artifact') {
+        stage ('Build Application') {
             steps {
                 echo 'BUILDING PROJECT'
 
@@ -73,13 +73,13 @@ pipeline{
             }
         }
 
-        stage('Push Docker Image to Repo') {
+        stage('Push Docker Image') {
             steps{
               echo 'PUSHING DOCKER IMAGE TO REPO'
               script {
                 docker.withRegistry( '', registryCredential ) {
                             dockerImage.push("$BUILD_NUMBER")
-                            //dockerImage.push('latest')
+                            dockerImage.push('latest')
                 }
               }
             }
