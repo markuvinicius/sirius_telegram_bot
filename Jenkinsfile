@@ -1,16 +1,8 @@
 pipeline{
-
-/*
-    environment {
-            registry = "registry.gitlab.com/markuvinicius"
-            registryCredential = 'gitlab-registry'
-            
-    }
-*/
-
     environment {
         registry = "hub.docker.com/markuvinicius/sirius-telegram-bot"
         registryCredential = 'dockerhub'
+        dockerImage = ''
     }
 
     agent any
@@ -63,25 +55,32 @@ pipeline{
         }
 */
 
-        stage ('Build') {
+        stage ('Build Application Artifact') {
             steps {
-                //withCredentials([usernamePassword(credentialsId: 'gitlab-registry', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
-                    // the code in here can access $pass and $user
-                    echo 'BUILDING PROJECT'
+                echo 'BUILDING PROJECT'
 
-                    sh '''
-                        mvn clean install
-                    '''
-
-                //}
-
+                sh '''
+                    mvn clean install
+                '''
             }
         }
 
-        stage('Building Docker image') {
+        stage('Build Docker image') {
             steps{
               script {
-                docker.build registry + ":$BUILD_NUMBER"
+                dockerImage = docker.build registry + ":$BUILD_NUMBER"
+              }
+            }
+        }
+
+        stage('Push Docker Image to Repo') {
+            steps{
+              echo 'PUSHING DOCKER IMAGE TO REPO'
+              script {
+                docker.withRegistry( '', registryCredential ) {
+                            dockerImage.push("$BUILD_NUMBER")
+                            //dockerImage.push('latest')
+                }
               }
             }
         }
