@@ -21,7 +21,7 @@ public class WordCommand implements BotCommand {
 
     @Override
     public ModelAndView execute(String arguments) throws BotException {
-        Optional<WordComposition> translations = null;
+        Optional<WordComposition> translations;
 
         try {
             translations = this.wordDefinitionService.defineWord(arguments);
@@ -31,8 +31,7 @@ public class WordCommand implements BotCommand {
 
         if ( translations.isPresent() ) {
             ModelAndView mvc = new ModelAndView();
-            WordComposition wordComposition = translations.get();
-            mvc.addObject("word_composition", wordComposition);
+            mvc.addObject("word_composition", translations.get());
             mvc.setView(new WordDefinitionsView());
             return mvc;
         }else{

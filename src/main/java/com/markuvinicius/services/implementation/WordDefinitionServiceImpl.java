@@ -22,8 +22,6 @@ public class WordDefinitionServiceImpl implements WordDefinitionService {
 
     private OkHttpClient http;
 
-
-
     private WordsApiProperties wordsApiProperties;
 
     @Autowired
