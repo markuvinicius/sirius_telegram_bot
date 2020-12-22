@@ -53,8 +53,12 @@ public class BotController extends TelegramLongPollingBot {
         ModelMap objects = modelAndView.getModelObjects();
         SendMessage message = view.render(objects);
 
+        answerMessage(message);
+    }
+
+    private void answerMessage(SendMessage message){
         try {
-            execute(message); //sends the response message
+            execute(message);
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }

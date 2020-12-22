@@ -99,9 +99,7 @@
 					<excludes>
 						<exclude>com.markuvinicius.configuration.*</exclude>
 						<exclude>com.markuvinicius.constants.*</exclude>
-						<exclude>com.markuvinicius.exceptions.*</exclude>
 						<exclude>com.markuvinicius.models.*</exclude>
-						<exclude>**/*Dev.*</exclude>
 					</excludes>
 				</configuration>
 				<executions>
