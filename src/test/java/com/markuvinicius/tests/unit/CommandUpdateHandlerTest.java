@@ -87,7 +87,7 @@ public class CommandUpdateHandlerTest extends BasicUnitTest{
     }
 
     @Test
-    public void CommandUpdateHandlerShouldReturnNullMvnWhenUpdateHasNoEntity() throws BotException {
+    public void CommandUpdateHandlerShouldReturnNullWhenUpdateHasNoEntity() throws BotException {
         Mockito.when( message.hasEntities() ).thenReturn( false );
         ModelAndView mvc = commandUpdateHandler.execute(update);
         Assertions.assertThat(mvc).isNull();
