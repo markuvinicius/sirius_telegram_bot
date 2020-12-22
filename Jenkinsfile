@@ -12,8 +12,6 @@ pipeline{
         jdk 'jdk8'
     }
 
-
-
     stages {
         stage ('Initialize') {
             steps {
