@@ -11,7 +11,9 @@ import com.markuvinicius.services.WordDefinitionService;
 import com.markuvinicius.views.implementation.WordDefinitionDetailsView;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -26,19 +28,21 @@ public class CallBackQueryUpdateHandlerTest  extends BasicUnitTest{
 
     @Mock private Message message;
     @InjectMocks private CallbackQuery callbackQuery = Mockito.spy(CallbackQuery.class);
-    @InjectMocks private Update update;
+    @InjectMocks private Update update = Mockito.spy(Update.class);
 
     @Mock private BotCommand botCommand;
     @Mock private CommandFactory commandFactory;
     @Mock private WordDefinitionService wordDefinitionService;
     @InjectMocks  private CallBackQueryUpdateHandler callBackQueryUpdateHandler;
 
-
+    @Rule public ExpectedException expectedException = ExpectedException.none();
 
     private String wordCommandText;
     private String argumentText;
     private Long chatId;
     private final String OBJECT_KEY_NAME = "word_definition";
+
+
 
     @Before
     public void setup(){
@@ -59,7 +63,27 @@ public class CallBackQueryUpdateHandlerTest  extends BasicUnitTest{
     }
 
     @Test
-    public void CallBackQueryUpdateHandlerShouldReturnModelAndViewWithWordDefinition() throws BotException, IOException {
+    public void handlerShouldCallNextInTheChainWhenNoCallBackQuery() throws BotException, IOException {
+        Mockito.when( update.hasCallbackQuery() ).thenReturn(false);
+        ModelAndView mvc = callBackQueryUpdateHandler.execute(update);
+
+        Assertions.assertThat( mvc ).isNull();
+    }
+
+    @Test
+    public void executeShouldThrowBotExceptionWhenError() throws IOException, BotException {
+        expectedException.expect(BotException.class);
+        Mockito.when( update.getCallbackQuery().getData() ).thenReturn(wordCommandText);
+        Mockito.when( update.getCallbackQuery().getMessage().getChatId() ).thenReturn( chatId );
+
+        Mockito.when( wordDefinitionService.defineWord(argumentText) ).thenThrow(IOException.class);
+        callBackQueryUpdateHandler.execute(update);
+        //Mockito.verify( wordDefinitionService.defineWord(argumentText),Mockito.times(1));
+
+    }
+
+    @Test
+    public void callBackQueryUpdateHandlerShouldReturnModelAndViewWithWordDefinition() throws BotException, IOException {
         Mockito.when( update.getCallbackQuery().getData() ).thenReturn(wordCommandText);
         Mockito.when( update.getCallbackQuery().getMessage().getChatId() ).thenReturn( chatId );
         Mockito.when( wordDefinitionService.defineWord(argumentText)).thenReturn( Optional.of( WordCompositionComposer.build()) );

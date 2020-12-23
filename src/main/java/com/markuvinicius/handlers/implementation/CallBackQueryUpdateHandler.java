@@ -1,6 +1,7 @@
 package com.markuvinicius.handlers.implementation;
 
 import com.markuvinicius.exceptions.BotException;
+import com.markuvinicius.exceptions.WordServiceNotAvailableException;
 import com.markuvinicius.handlers.AbstractUpdateHandler;
 import com.markuvinicius.models.commands.Command;
 import com.markuvinicius.models.commands.CommandDetails;
@@ -36,7 +37,7 @@ public class CallBackQueryUpdateHandler extends AbstractUpdateHandler {
             try {
                 return answerUpdate(update);
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new WordServiceNotAvailableException(e.getMessage());
             }
         }
 
