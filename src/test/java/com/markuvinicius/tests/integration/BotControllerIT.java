@@ -2,10 +2,8 @@ package com.markuvinicius.tests.integration;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-public class BotControllerIT {
+public class BotControllerIT extends BasicIntegrationTest{
 
     @Test
     public void test(){
