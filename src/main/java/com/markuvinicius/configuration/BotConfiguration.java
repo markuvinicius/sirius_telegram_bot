@@ -1,7 +1,9 @@
 package com.markuvinicius.configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.markuvinicius.models.properties.TelegramProperties;
 import com.markuvinicius.models.properties.WordsApiProperties;
+import okhttp3.OkHttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -48,4 +50,15 @@ public class BotConfiguration {
                 .build();
     }
 
+    @Bean
+    public OkHttpClient okHttpClient() {
+        return new OkHttpClient();
+    }
+
+    @Bean
+    public ObjectMapper objectMapper(){
+        return new ObjectMapper();
+    }
 }
+
+

@@ -1,62 +1,74 @@
 package com.markuvinicius.tests.unit;
 
-import com.markuvinicius.exceptions.EnvironmentVariablesNotFoundException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.markuvinicius.composer.WordCompositionComposer;
 import com.markuvinicius.models.properties.WordsApiProperties;
+import com.markuvinicius.models.words.WordComposition;
 import com.markuvinicius.services.implementation.WordDefinitionServiceImpl;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import org.apache.http.HttpStatus;
-import org.junit.Rule;
+import okhttp3.*;
+import org.assertj.core.api.Assertions;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.io.IOException;
+import java.util.Optional;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 public class WordDefinitionServiceImplTest extends BasicUnitTest{
 
     @Mock
     private OkHttpClient okHttpClient;
 
-    @Rule
-    public final ExpectedException thrown = ExpectedException.none();
+    @Mock
+    private ObjectMapper objectMapper;
 
-    private WordsApiProperties properties;
-    private WordDefinitionServiceImpl wordDefinitionService;
+    @Mock
+    private WordsApiProperties wordsApiProperties;
 
-    @Test
-    public void serviceInstantiationWithoutPropertiesShouldThrownException() throws EnvironmentVariablesNotFoundException {
-        thrown.expect(EnvironmentVariablesNotFoundException.class);
-        thrown.expectMessage("Environment Variables Not Found [WORDS_API_KEY]");
+    @Mock
+    private Call call;
 
-        properties = WordsApiProperties.builder().build();
-        wordDefinitionService = new WordDefinitionServiceImpl(properties);
+    @InjectMocks
+    private WordDefinitionServiceImpl wordDefinitionService ;
+
+    private final String stubbyUrl = "http://stubby.com";
+    private Response response;
+
+    @Before
+    public void setup(){
+
     }
 
-    /*@Test
-    public void defineWordShouldReturnEmptyWhenResponseIsNotOk() throws EnvironmentVariablesNotFoundException, IOException {
-        doAnswer(i -> {
-            // Mock the response here based on the request
-            Request request = i.getArgument(0);
-            Response response = mock(Response.class);
-            // TODO Set up the response here
-            when(response.code()).thenReturn(HttpStatus.SC_OK);
 
-            return response;
-        }).when(okHttpClient).newCall(Mockito.any());
+    @Test
+    public void defineWordShouldNonEmptyOptionalWhenRequestIsOK() throws IOException {
 
-        properties = WordsApiProperties.builder()
-                .wordsApiHost("host")
-                .wordsAPIKey("key")
-                .wordsApiUrl("http://teste.com")
+        ResponseBody responseBody = ResponseBody.create("", MediaType.parse("application/json"));
+
+        this.response = new Response.Builder()
+                .code(200)
+                .request(new Request.Builder().url(stubbyUrl).build())
+                .protocol(Protocol.HTTP_1_0)
+                .message("message")
+                .body(responseBody)
                 .build();
 
-        wordDefinitionService = new WordDefinitionServiceImpl(properties);
-        wordDefinitionService.defineWord("test");
+        when( wordsApiProperties.getWordsApiUrl() ).thenReturn( stubbyUrl );
+        when( wordsApiProperties.getWordsAPIKey() ).thenReturn( "foo" );
+        when( wordsApiProperties.getWordsApiHost() ).thenReturn( "bar" );
 
-    }*/
+        when( call.execute() ).thenReturn(response);
+        when( okHttpClient.newCall(any(Request.class))).thenReturn(call);
+        Mockito.when( objectMapper.readValue(response.body().string(), WordComposition.class)).thenReturn(WordCompositionComposer.build());
+
+        Optional<WordComposition> wordComposition = wordDefinitionService.defineWord("check");
+
+        Assertions.assertThat( wordComposition.isPresent() ).isTrue();
+    }
+
 }
