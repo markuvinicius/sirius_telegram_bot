@@ -20,30 +20,20 @@ import java.util.Optional;
 @Service
 public class WordDefinitionServiceImpl implements WordDefinitionService {
 
+    @Autowired
     private OkHttpClient http;
 
+    @Autowired
     private WordsApiProperties wordsApiProperties;
 
     @Autowired
-    public WordDefinitionServiceImpl(WordsApiProperties properties) throws EnvironmentVariablesNotFoundException {
-        this.http = new OkHttpClient();
-        this.wordsApiProperties = properties;
-
-        if (!this.isWordsAPIKeyValid()){
-            throw new EnvironmentVariablesNotFoundException("Environment Variables Not Found [WORDS_API_KEY]");
-        }
-    }
-
-    private boolean isWordsAPIKeyValid(){
-        return ( ( this.wordsApiProperties.getWordsAPIKey() != null )
-                && ( !this.wordsApiProperties.getWordsAPIKey().isEmpty()) );
-    }
+    private ObjectMapper objectMapper;
 
     @Override
     public Optional<WordComposition> defineWord(String word) throws IOException {
 
         Request request = new Request.Builder()
-                .url(this.wordsApiProperties.getWordsApiUrl() + word)
+                .url(wordsApiProperties.getWordsApiUrl() + word)
                 .get()
                 .addHeader("x-rapidapi-host", this.wordsApiProperties.getWordsApiHost())
                 .addHeader("x-rapidapi-key", this.wordsApiProperties.getWordsAPIKey())
@@ -52,7 +42,6 @@ public class WordDefinitionServiceImpl implements WordDefinitionService {
         Response response = http.newCall(request).execute();
 
         if ( response.code() == HttpStatus.SC_OK ){
-            ObjectMapper objectMapper = new ObjectMapper();
             WordComposition wordComposition = objectMapper.readValue(response.body().string(), WordComposition.class);
 
             return Optional.of(wordComposition);
