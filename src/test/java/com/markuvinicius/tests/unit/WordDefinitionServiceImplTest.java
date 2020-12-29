@@ -41,13 +41,16 @@ public class WordDefinitionServiceImplTest extends BasicUnitTest{
 
     @Before
     public void setup(){
+        when( wordsApiProperties.getWordsApiUrl() ).thenReturn( stubbyUrl );
+        when( wordsApiProperties.getWordsAPIKey() ).thenReturn( "foo" );
+        when( wordsApiProperties.getWordsApiHost() ).thenReturn( "bar" );
 
+        when( okHttpClient.newCall(any(Request.class))).thenReturn(call);
     }
 
 
     @Test
-    public void defineWordShouldNonEmptyOptionalWhenRequestIsOK() throws IOException {
-
+    public void defineWordShouldReturnNonEmptyOptionalWhenRequestIsOK() throws IOException {
         ResponseBody responseBody = ResponseBody.create("", MediaType.parse("application/json"));
 
         this.response = new Response.Builder()
@@ -58,17 +61,29 @@ public class WordDefinitionServiceImplTest extends BasicUnitTest{
                 .body(responseBody)
                 .build();
 
-        when( wordsApiProperties.getWordsApiUrl() ).thenReturn( stubbyUrl );
-        when( wordsApiProperties.getWordsAPIKey() ).thenReturn( "foo" );
-        when( wordsApiProperties.getWordsApiHost() ).thenReturn( "bar" );
-
         when( call.execute() ).thenReturn(response);
-        when( okHttpClient.newCall(any(Request.class))).thenReturn(call);
-        Mockito.when( objectMapper.readValue(response.body().string(), WordComposition.class)).thenReturn(WordCompositionComposer.build());
+        when( objectMapper.readValue(response.body().string(), WordComposition.class)).thenReturn(WordCompositionComposer.build());
 
         Optional<WordComposition> wordComposition = wordDefinitionService.defineWord("check");
-
         Assertions.assertThat( wordComposition.isPresent() ).isTrue();
+    }
+
+    @Test
+    public void defineWordShouldReturnEmptyOptionalWhenRequestIsNotOK() throws IOException {
+        ResponseBody responseBody = ResponseBody.create("", MediaType.parse("application/json"));
+
+        this.response = new Response.Builder()
+                .code(404)
+                .request(new Request.Builder().url(stubbyUrl).build())
+                .protocol(Protocol.HTTP_1_0)
+                .message("message")
+                .body(responseBody)
+                .build();
+
+        when( call.execute() ).thenReturn(response);
+
+        Optional<WordComposition> wordComposition = wordDefinitionService.defineWord("check");
+        Assertions.assertThat( wordComposition.isEmpty() ).isTrue();
     }
 
 }
