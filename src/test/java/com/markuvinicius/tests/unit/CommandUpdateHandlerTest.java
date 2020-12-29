@@ -48,7 +48,6 @@ public class CommandUpdateHandlerTest extends BasicUnitTest{
 
     @Test
     public void CommandUpdateHandlerShouldReturnModelAndViewWithAChatID() throws BotException {
-
         Mockito.when( message.hasEntities() ).thenReturn(true);
         Mockito.when( message.getEntities() ).thenReturn( Arrays.asList(messageEntity) );
         Mockito.when( message.getText() ).thenReturn(messageText);

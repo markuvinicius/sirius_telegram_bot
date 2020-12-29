@@ -23,12 +23,8 @@ import java.util.Optional;
 @Slf4j
 public class CallBackQueryUpdateHandler extends AbstractUpdateHandler {
 
-    private WordDefinitionService wordDefinitionService;
-
     @Autowired
-    public CallBackQueryUpdateHandler(WordDefinitionService wordDefinitionService) {
-        this.wordDefinitionService = wordDefinitionService;
-    }
+    private WordDefinitionService wordDefinitionService;
 
     @Override
     public ModelAndView execute(Update update) throws BotException {
