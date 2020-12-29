@@ -21,8 +21,8 @@ public class UpdateHandleService {
         this.handler = commandUpdateHandler;
 
         this.handler
-                .linkWith(linkUpdateHandler)
-                .linkWith(callBackUpdateHandler);
+                .linkWith(callBackUpdateHandler)
+                .linkWith(linkUpdateHandler);
     }
 
     public ModelAndView handleUpdate(Update update) throws BotException {

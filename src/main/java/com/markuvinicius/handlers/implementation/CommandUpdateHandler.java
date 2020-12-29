@@ -20,12 +20,8 @@ import java.util.List;
 @Slf4j
 public class CommandUpdateHandler  extends AbstractUpdateHandler {
 
-    private CommandFactory commandFactory;
-
     @Autowired
-    public CommandUpdateHandler(CommandFactory factory){
-        this.commandFactory = factory;
-    }
+    private CommandFactory commandFactory;
 
     @Override
     public ModelAndView execute(Update update) throws BotException {
