@@ -36,9 +36,7 @@ public class CommandUpdateHandler  extends AbstractUpdateHandler {
         if ( update.hasMessage() ) {
             if (update.getMessage().hasEntities()) {
                 return update.getMessage().getEntities().stream()
-                        .filter(messageEntity -> messageEntity.getType().equals(BotDomainConstants.MessageEntityType.BOT_COMMAND))
-                        .findFirst()
-                        .isPresent();
+                        .anyMatch(messageEntity -> messageEntity.getType().equals(BotDomainConstants.MessageEntityType.BOT_COMMAND));
             }
         }
 
